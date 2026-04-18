@@ -44,8 +44,8 @@ void parseMidi(byte com, byte par1, byte par2){
   if (command==8) {
     noteOff(channel, par1, par2);
   }
-  if (command==12) {
-    //programChange(channel, par1);
+  if (command==0x0A) {
+    controlChange(channel, par1, par2);
   }
 }
 
@@ -57,3 +57,16 @@ void noteOff(byte channel, byte note, byte velocity){
   arp.removeNote(note);
 }
 
+void controlChange(byte channel, byte controlNo, byte value){
+  switch (controlNo){
+    case 50:
+      setVoltage(DAC1, 1, 1, map(value, 0, 127, 0, 4000));  // Top jack
+    break;
+    case 51:
+      setVoltage(DAC2, 1, 1, map(value, 0, 127, 0, 4000));   // Second jack from top
+    break;
+    case 52:
+      setVoltage(DAC2, 0, 1, map(value, 0, 127, 0, 4000)); // Third jack from top
+    break;   
+  }
+}

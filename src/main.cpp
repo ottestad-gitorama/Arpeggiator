@@ -33,7 +33,10 @@ void setup() {
   digitalWrite(ENABLE_MIDI, HIGH);
 
   SPI.begin();
-  setVoltage(DAC2, 0, 0, 1023);  
+  setVoltage(DAC1, 0, 0, 1023);  
+  // setVoltage(DAC1, 1, 1, 000);  // Top jack
+  // setVoltage(DAC2, 0, 1, 000);  // Third jack from top
+  // setVoltage(DAC2, 1, 1, 000);  // Second jack from top
   arp.setCallbacks(trigNote, stopNote);
   shapeBtn.begin();
 }

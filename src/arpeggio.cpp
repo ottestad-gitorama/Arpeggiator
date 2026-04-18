@@ -14,13 +14,19 @@ void Arpeggio::setCallbacks(StartNoteCallback startNoteCallback, StopNoteCallbac
 void Arpeggio::shapeCycle(){
     arpShape++;
     if (arpShape >= ARPEGGIO_SHAPE_COUNT){arpShape = 0;}
+    if (arpState == ARP_STATE_HOLD){
+        // TODO: How can we keep held notes while cycling?
+    }
     createArpBuffer();
 }   
 
 void Arpeggio::setState(ArpState state){
     if (arpState != state){
         arpState = state;
-        if (arpState == ARP_STATE_OFF) clearAll();
+        if (arpState != ARP_STATE_HOLD) {
+            stopNote();
+            clearAll();
+        }
     }
 }
 
@@ -142,17 +148,22 @@ void Arpeggio::addNote(byte note, byte velocity){
     if (arpState == ARP_STATE_PLAY){
         createArpBuffer(); 
     }
+    if (arpState == ARP_STATE_HOLD){
+        createArpBuffer();
+    }
 }
 
 void Arpeggio::removeNote(byte note){
     keyBuffer[note] = 0;
     // Emediate stop if arp is off
     if (arpState == ARP_STATE_OFF){
-    stopNote();
+        if (note == currentNote) stopNote();
     }
     if (arpState == ARP_STATE_PLAY){
-    createArpBuffer();
+        createArpBuffer();
+        if (arpCount == 0) stopNote();
     }
-    if (arpCount == 0) stopNote();
+    if (arpState == ARP_STATE_HOLD){
+    }
 }
 
